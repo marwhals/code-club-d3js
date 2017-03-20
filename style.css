@@ -1,0 +1,35 @@
+/* Generic font styling for the entire page */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+}
+
+/* The chart: blue border for easy appreciation of the chart area */
+svg {
+  border: 1px solid blue;
+}
+
+/* The chart's axes */
+.axis line,
+.axis path {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+/* A single data point on the XY scatterplot */
+.dot {
+  fill: black;
+  stroke: black;
+}
+
+/* The tooltip displayed when mousing over a dot */
+.tooltip {
+  position: absolute;
+  z-index: 10;
+  padding: 0.25em 0.5em;
+  color: white;
+  pointer-events: none;
+  background-color: #666;
+  border-radius: 0.25em;
+}
