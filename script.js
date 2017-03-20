@@ -32,6 +32,16 @@ const yAxis = d3.svg.axis()
   .orient('left')                // Render as a left axis
   .tickFormat(d => d / 1000000); // Show each tick's value as millions
 
+// Create a colour scale to represent each film's metascore
+const colour = d3.scale.linear()
+  .domain([0, 50, 100])           // A fixed domain from 0 to 100 with a step at 50
+  .interpolate(d3.interpolateHcl) // Use a preset way of mixing any colour in the range
+  .range([
+    d3.rgb('#ff0000'),            // Films with a metascore of 0 will be red
+    d3.rgb('#ffff00'),            // Films with a metascore of 50 will be yellow
+    d3.rgb('#00ff00')             // Films with a metascore of 100 will be green
+  ]);
+
 // Create a tooltip to display info about the film being looked at
 const tooltip = d3.select('#graph').append('div') // Add a div into the HTML element with ID 'graph'
   .attr('class', 'tooltip')                       // Give it the 'tooltip' class
@@ -97,11 +107,12 @@ d3.csv('data/imdb.csv', (error, data) => {
       .attr('r', 3.5)               // Make its radius 3.5 pixels
       .attr('cx', d => x(d.budget)) // Use 'x' linear scale to position circle's centre on the X axis
       .attr('cy', d => y(d.gross))  // Use 'y' linear scale to position circle's centre on the Y axis
+      .style('fill', d => colour(d.metascore)) // Use the colour scale to colour the dot based on metascore
       .on('mouseover', (d) => {     // Perform actions when a dot is moused over
         tooltip.transition()        // Quickly fade the tooltip into visibility
           .duration(200)
           .style('opacity', 1);
-        tooltip.html(d.name)        // Change the text and position of the tooltip to match the dot being moused over
+        tooltip.html(`${d.name} (${d.metascore}%)`) // Display the film's name and metascore next to the dot
           .style('left', `${d3.event.pageX + 3.5}px`)
           .style('top', `${d3.event.pageY - 18.5}px`);
       })
