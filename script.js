@@ -32,6 +32,11 @@ const yAxis = d3.svg.axis()
   .orient('left')                // Render as a left axis
   .tickFormat(d => d / 1000000); // Show each tick's value as millions
 
+// Create a tooltip to display info about the film being looked at
+const tooltip = d3.select('#graph').append('div') // Add a div into the HTML element with ID 'graph'
+  .attr('class', 'tooltip')                       // Give it the 'tooltip' class
+  .style('opacity', 0);                           // Make it invisible using the CSS 'opacity' property
+
 // Create a SVG to be used as the graph
 const svg = d3.select('#graph').append('svg') // Add a SVG into the HTML element with ID 'graph'
   .attr('width', dimensions.width)                                  // Set SVG width
@@ -85,11 +90,24 @@ d3.csv('data/imdb.csv', (error, data) => {
       .text('Worldwide Gross ($1m)');                   // Set the text to show as the axis's label
 
   // Add a dot to the SVG for each data point
-  svg.selectAll('.dot')         // Select any existing elements with class 'dot'
-    .data(data)                 // Add data from 'data' variable to the selection
-    .enter().append('circle')   // For each selected piece of data, create a circle
-      .attr('class', 'dot')     // Give it the CSS class 'dot'
-      .attr('r', 3.5)           // Make its radius 3.5 pixels
-      .attr('cx', d => x(d.budget))  // Use 'x' linear scale to position circle's centre on the X axis
-      .attr('cy', d => y(d.gross)); // Use 'y' linear scale to position circle's centre on the Y axis
+  svg.selectAll('.dot')             // Select any existing elements with class 'dot'
+    .data(data)                     // Add data from 'data' variable to the selection
+    .enter().append('circle')       // For each selected piece of data, create a circle
+      .attr('class', 'dot')         // Give it the CSS class 'dot'
+      .attr('r', 3.5)               // Make its radius 3.5 pixels
+      .attr('cx', d => x(d.budget)) // Use 'x' linear scale to position circle's centre on the X axis
+      .attr('cy', d => y(d.gross))  // Use 'y' linear scale to position circle's centre on the Y axis
+      .on('mouseover', (d) => {     // Perform actions when a dot is moused over
+        tooltip.transition()        // Quickly fade the tooltip into visibility
+          .duration(200)
+          .style('opacity', 1);
+        tooltip.html(d.name)        // Change the text and position of the tooltip to match the dot being moused over
+          .style('left', `${d3.event.pageX + 3.5}px`)
+          .style('top', `${d3.event.pageY - 18.5}px`);
+      })
+      .on('mouseout', (d) => {      // Perform actions when a dot is moused away from
+        tooltip.transition()        // Make the tooltip invisible again
+          .duration(500)
+          .style('opacity', 0);
+      });
 });
