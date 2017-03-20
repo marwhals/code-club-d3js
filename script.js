@@ -2,9 +2,19 @@
 
 // Define the size of the chart area
 const graph = {
-  width: 500,
-  height: 500
+  width: 750,
+  height: 750
 };
+
+// Create linear scales for both data axes
+// These convert the data values into numbers used to draw dots on the graph
+const x = d3.scale.linear()
+  .domain([0, 500])         // The range of X axis values displayed on the chart
+  .range([0, graph.width]); // The range of X axis positions for dots on the graph
+
+const y = d3.scale.linear()
+.domain([0, 500])         // The range of Y axis values displayed on the chart
+.range([0, graph.height]); // The range of Y axis positions for dots on the graph
 
 // Create a SVG to be used as the graph
 const svg = d3.select('#graph').append('svg') // Add a SVG into the HTML element with ID 'graph'
@@ -26,11 +36,11 @@ d3.csv('data/basic.csv', (error, data) => {
   });
 
   // Add a dot to the SVG for each data point
-  svg.selectAll('.dot')       // Select any existing elements with class 'dot'
-    .data(data)               // Add data from 'data' variable to the selection
-    .enter().append('circle') // For each selected piece of data, create a circle
-      .attr('class', 'dot')   // Give it the CSS class 'dot'
-      .attr('r', 3.5)         // Make its radius 3.5 pixels
-      .attr('cx', d => d.x)   // Use data 'x' value to position circle's centre on the X axis
-      .attr('cy', d => d.y);  // Use data 'y' value to position circle's centre on the Y axis
+  svg.selectAll('.dot')         // Select any existing elements with class 'dot'
+    .data(data)                 // Add data from 'data' variable to the selection
+    .enter().append('circle')   // For each selected piece of data, create a circle
+      .attr('class', 'dot')     // Give it the CSS class 'dot'
+      .attr('r', 3.5)           // Make its radius 3.5 pixels
+      .attr('cx', d => x(d.x))  // Use 'x' linear scale to position circle's centre on the X axis
+      .attr('cy', d => y(d.y)); // Use 'y' linear scale to position circle's centre on the Y axis
 });
