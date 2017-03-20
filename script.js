@@ -9,11 +9,9 @@ const graph = {
 // Create linear scales for both data axes
 // These convert the data values into numbers used to draw dots on the graph
 const x = d3.scale.linear()
-  .domain([0, 500])         // The range of X axis values displayed on the chart
   .range([0, graph.width]); // The range of X axis positions for dots on the graph
 
 const y = d3.scale.linear()
-  .domain([0, 500])         // The range of Y axis values displayed on the chart
   .range([0, graph.height]); // The range of Y axis positions for dots on the graph
 
 // Create a SVG to be used as the graph
@@ -34,6 +32,13 @@ d3.csv('data/basic.csv', (error, data) => {
     d.x = Number(d.x);
     d.y = Number(d.y);
   });
+
+  // Set the domain for the axes' linear scales
+  // Limit it to the extent of the data
+  // This makes the graph only show the 'area' that the data occupies
+  // 'nice' makes the domain start and end at round, sensible numbers
+  x.domain(d3.extent(data, d => d.x)).nice();
+  y.domain(d3.extent(data, d => d.y)).nice();
 
   // Add a dot to the SVG for each data point
   svg.selectAll('.dot')         // Select any existing elements with class 'dot'
