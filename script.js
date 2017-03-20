@@ -13,8 +13,8 @@ const x = d3.scale.linear()
   .range([0, graph.width]); // The range of X axis positions for dots on the graph
 
 const y = d3.scale.linear()
-.domain([0, 500])         // The range of Y axis values displayed on the chart
-.range([0, graph.height]); // The range of Y axis positions for dots on the graph
+  .domain([0, 500])         // The range of Y axis values displayed on the chart
+  .range([0, graph.height]); // The range of Y axis positions for dots on the graph
 
 // Create a SVG to be used as the graph
 const svg = d3.select('#graph').append('svg') // Add a SVG into the HTML element with ID 'graph'
